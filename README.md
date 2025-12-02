@@ -13,4 +13,4 @@ Now in the repository you have access to access_mem.a library that you can inclu
 - ```int access_mem_OPEN(const char *pathname, int flags, ...)``` -> this function replaces open function from top to bottom, no differences !
 - ```void access_mem_NUKE()``` -> this function nukes your environment freeing and closing everything and then exiting cleanly (you use this one in case of fails or at the end of your program to end it cleanly).
 
-Have fun with C Language GOD MODE 🔥 !
+Have fun with C Language GOD MODE ! 🔥
