@@ -1,9 +1,13 @@
 # access_mem
 
 This library gives you the right to not **free() mallocs** and **close() fds** anymore.
-To compile just type this command in the repository:
+To compile without debugging just type this command in the repository:
 ```
 $ make lib
+```
+for debug mode:
+```
+$ make debug
 ```
 
 Now in the repository you have access to access_mem.a library that you can include wherever you want ⚒️ !
