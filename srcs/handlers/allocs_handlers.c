@@ -1,33 +1,38 @@
 
-#include "access_mem.h"
+#include "includes.h"
 
-void *alloc_handler(t_alloc **allocs, size_t size)
+void *alloc_handler(t_alloc **allocs, t_alloc **last_alloc, va_list options)
 {
-    static t_alloc *last_alloc = NULL;
+    size_t size = va_arg(options, size_t);
+    alloc_pos alloc_origin = va_arg(options, t_pos);
 
     void *new_alloc = malloc(size); // create the malloc
-    if (!new_alloc) { printf("[%s]: Malloc of size [%zu] failed\n", ERROR_LOG, size); access_mem_NUKE(); return MALLOC_FAILED; } // if failure we should FREE ALL and exit and close also all fds
+    if (!new_alloc) { MALLOC_FAIL_DEBUG_LOG(); MALLOC_FAILED(); } // if failure we should FREE ALL and exit and close also all fds
     memset(new_alloc, 0, size);
 
-
     t_alloc *new_node = malloc(sizeof(t_alloc));
-    if (!new_node) { printf("[%s]: Malloc of new alloc node failed\n", ERROR_LOG); free(new_alloc); last_alloc = NULL; access_mem_NUKE(); return MALLOC_FAILED; } // if failure we should FREE ALL and exit and close also all fds
+    if (!new_node) { free(new_alloc); MALLOC_FAIL_DEBUG_LOG(); MALLOC_FAILED(); } // if failure we should FREE ALL and exit and close also all fds
     new_node->_alloc = new_alloc;
+    new_node->_alloc_pos = alloc_origin;
     new_node->_next = NULL;
 
-    if (!(*allocs)) return *allocs = new_node, last_alloc = new_node, new_alloc; // if the list is empty add the malloc to the head;
-    return last_alloc->_next = new_node, last_alloc = new_node, new_alloc;
+    MALLOC_SUCCESS_DEBUG_LOG();
+    if (!(*allocs)) return *allocs = new_node, *last_alloc = new_node, new_alloc; // if the list is empty add the malloc to the head;
+    return (*last_alloc)->_next = new_node, *last_alloc = new_node, new_alloc;
 }
 
-void free_alloc_handler(t_alloc **allocs, void *alloc_to_free)
+void free_alloc_handler(t_alloc **allocs, t_alloc **last_alloc, va_list options)
 {
+    void *alloc_to_free = va_arg(options, void *);
+
     // if alloc list is empty
-    if (!(*allocs)) { printf("[%s]: Address [%p] isn't dynamically allocated\n", BOLD_YELLOW, alloc_to_free); return; }
+    if (!(*allocs)) { FREE_FAIL_DEBUG_LOG(); return; }
     
     // if the deleted node is head
     if ((*allocs)->_alloc == alloc_to_free) 
     {
         t_alloc *new_head = (*allocs)->_next;
+        FREE_SUCCESS_DEBUG_LOG((*allocs));
         free((*allocs)->_alloc);
         free(*allocs);
         *allocs = new_head;
@@ -42,6 +47,8 @@ void free_alloc_handler(t_alloc **allocs, void *alloc_to_free)
         if (iterator->_alloc == alloc_to_free)
         {
             previous->_next = iterator->_next;
+            if (iterator == *last_alloc) *last_alloc = previous;
+            FREE_SUCCESS_DEBUG_LOG(iterator);
             free(iterator->_alloc);
             free(iterator);
             return;
@@ -51,7 +58,25 @@ void free_alloc_handler(t_alloc **allocs, void *alloc_to_free)
     }
 
     // nothing was found
-    printf("[%s]: Address [%p] isn't dynamically allocated\n", WARNING_LOG, alloc_to_free);
+    FREE_FAIL_DEBUG_LOG();
 }
 
-void free_all_handler(t_alloc **allocs) { while ((*allocs) != NULL) access_mem_FREE_ALLOC((*allocs)->_alloc); }
+void *register_alloc_handler(t_alloc **allocs, t_alloc **last_alloc, va_list options)
+{
+    void *new_alloc = va_arg(options, void *);
+    alloc_pos alloc_origin = va_arg(options, t_pos);
+    t_alloc *original_alloc = NULL;
+
+    // allocation is already registered we dont register again
+    if ((original_alloc = alloc_exists(allocs, new_alloc))) { REGISTER_ALLOC_ALREADY_REGISTERED_LOG(); REGISTER_FAILED(); };
+
+    t_alloc *new_node = malloc(sizeof(t_alloc));
+    if (!new_node) { REGISTER_ALLOC_FAIL_DEBUG_LOG(); MALLOC_FAILED(); } // if failure we should FREE ALL and exit and close also all fds
+    new_node->_alloc = new_alloc;
+    new_node->_alloc_pos = alloc_origin;
+    new_node->_next = NULL;
+
+    REGISTER_ALLOC_SUCCESS_DEBUG_LOG();
+    if (!(*allocs)) return *allocs = new_node, *last_alloc = new_node, new_alloc; // if the list is empty add the malloc to the head;
+    return (*last_alloc)->_next = new_node, *last_alloc = new_node, new_alloc;
+}

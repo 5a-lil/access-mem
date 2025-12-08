@@ -1,59 +1,24 @@
 
-#include "access_mem.h"
+#include "../access_mem.h"
+
+void *nimp(int size)
+{
+    return _AM_MALLOC(size);
+}
 
 int main()
 {
-    access_mem_PRINT_MEM();
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    char *dsadsa = access_mem_ALLOC(100);
-    dsadsa = access_mem_ALLOC(100);
-    dsadsa = access_mem_ALLOC(100);
-    dsadsa = access_mem_ALLOC(100);
-    dsadsa = access_mem_ALLOC(100);
-    dsadsa = access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_ALLOC(100);
-    access_mem_PRINT_MEM();
-    access_mem_FREE_ALLOC(dsadsa);
-    char *dsa = access_mem_ALLOC(100);
-    dsa = access_mem_ALLOC(100);
-    char *dsaa = access_mem_ALLOC(100);
-    dsa = access_mem_ALLOC(100);
-    dsa = access_mem_ALLOC(100);
-    access_mem_PRINT_MEM();
-    access_mem_FREE_ALLOC(dsaa);
-    access_mem_PRINT_MEM();
-    access_mem_FREE_ALLOC(dsa);
-    access_mem_PRINT_MEM();
-    access_mem_FREE_ALLOC(dsa);
-    access_mem_FREE_ALLOC(dsaa);
-
-    int fd = access_mem_OPEN("./makefile", O_RDONLY);
-    access_mem_OPEN("./makefile", O_RDONLY, 0765);
-    access_mem_OPEN("./testttt", O_CREAT, 0000, 7865765);
-    access_mem_OPEN("./makefile", O_RDONLY);
-    fd = access_mem_OPEN("", O_RDONLY);
-    access_mem_CLOSE_FD(fd);
-    access_mem_CLOSE_FD(-1);
-    // access_mem_CLOSE_ALL();
-
-    char *tt = malloc(100);
-    access_mem_FREE_ALLOC(tt);
-    access_mem_NUKE();
+    char ***temp = nimp(77);
+    _AM_LOG_MEM();
+    char **temp2 = nimp(11);
+    _AM_OPEN("./Makefile", O_WRONLY);
+    _AM_REGISTER_FD(_AM_OPEN("./Makefile", O_WRONLY));
+    _AM_LOG_MEM();
+    _AM_FREE(temp);
+    _AM_FREE(temp);
+    _AM_FREE(temp2);
+    _AM_FREE(temp2);
+    _AM_LOG_MEM();
+    _AM_REGISTER_ALLOC(malloc(7));
+    _AM_NUKE_NO_EXIT();
 }
