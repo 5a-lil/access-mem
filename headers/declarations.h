@@ -6,7 +6,8 @@
 
 # ifndef DEVELOPMENT
 // ../SRCS/HANDLERS/OTHER_HANDLERS.C
-void log_mem_handler(t_alloc *allocs);
+void log_allocs_handler(t_alloc *allocs);
+void log_fds_handler(t_fd *fds);
 void nuke_handler(t_alloc **allocs, t_fd **fds, va_list options);
 
 // ../SRCS/HANDLERS/ALLOCS_HANDLERS.C
@@ -28,7 +29,8 @@ t_fd *fd_exists(t_fd **fds, int fd);
 // ../SRCS/ACCESS_MEM.C
 void *access_mem_ALLOC(size_t size, alloc_pos alloc_origin);
 int access_mem_OPEN(const char *pathname, int flags, open_pos open_origin, /*open declaration variadic args*/...);
-void access_mem_LOG_MEM();
+void access_mem_LOG_ALLOCS();
+void access_mem_LOG_FDS();
 void access_mem_FREE_ALLOC(void *alloc_to_free, /*needed for debug mode*/...);
 void access_mem_CLOSE(int fd_to_close, ...);
 void access_mem_NUKE(_am_bool exit_or_not, /*exit code arg if used*/...); 

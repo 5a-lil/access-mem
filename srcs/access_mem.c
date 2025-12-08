@@ -14,8 +14,10 @@ static void *access_mem(char *COMMAND, ...)
         return alloc_handler(&allocs, &last_alloc, options);
     else if (is_command(COMMAND, "open"))
         return open_handler(&fds, &last_fd, options);
-    else if (is_command(COMMAND, "log_mem"))
-        log_mem_handler(allocs);
+    else if (is_command(COMMAND, "log_allocs"))
+        log_allocs_handler(allocs);
+    else if (is_command(COMMAND, "log_fds"))
+        log_fds_handler(fds);
     else if (is_command(COMMAND, "free"))
         free_alloc_handler(&allocs, &last_alloc, options);
     else if (is_command(COMMAND, "close"))
@@ -30,7 +32,9 @@ static void *access_mem(char *COMMAND, ...)
     return NO_RETURN;
 }
 
-void access_mem_LOG_MEM() { access_mem("log_mem"); }
+void access_mem_LOG_ALLOCS() { access_mem("log_allocs"); }
+
+void access_mem_LOG_FDS() { access_mem("log_fds"); }
 
 void *access_mem_ALLOC(size_t size, alloc_pos alloc_origin) { return access_mem("alloc", size, alloc_origin); }
 

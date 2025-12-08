@@ -1,7 +1,7 @@
 
 #include "includes.h"
 
-void log_mem_handler(t_alloc *allocs)
+void log_allocs_handler(t_alloc *allocs)
 {
     if (!allocs) { printf("[%s]: No memory was allocated yet\n", DEFAULT_LOG); return; }
 
@@ -9,7 +9,20 @@ void log_mem_handler(t_alloc *allocs)
     printf("[%s]: Currently allocated memory:\n", DEFAULT_LOG);
     while (iterator != NULL)
     {
-        MEM_LOG();
+        LOG_ALLOC();
+        iterator = iterator->_next;
+    }
+}
+
+void log_fds_handler(t_fd *fds)
+{
+    if (!fds) { printf("[%s]: No opened files yet\n", DEFAULT_LOG); return; }
+
+    fds_iterator iterator = fds;
+    printf("[%s]: Currently opened files:\n", DEFAULT_LOG);
+    while (iterator != NULL)
+    {
+        LOG_FD();
         iterator = iterator->_next;
     }
 }

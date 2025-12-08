@@ -40,7 +40,7 @@
 #   define REGISTER_ALLOC_ALREADY_REGISTERED_LOG() \
       if (DEBUG) printf("[%s]: Address [%s] is already registered in memory at line [%d] in function [%s]\n", WARNING_LOG, alloc_origin._var_name, original_alloc->_alloc_pos._line, original_alloc->_alloc_pos._func_name);
 
-// / FREE
+// FREE
 #   define FREE_FAIL_DEBUG_LOG() \
       if (DEBUG) { log_stats debugger = va_arg(options, log_stats); printf("[%s]: Address [%p] in variable [%s] isn't registered/dynamically allocated at line [%d] in function [%s]\n", WARNING_LOG, alloc_to_free, debugger._var_name, debugger._line, debugger._func_name); };
 #   define FREE_SUCCESS_DEBUG_LOG(iterator) \
@@ -48,11 +48,15 @@
 #   define FREE_ALL_DEBUG_LOG() \
       if (DEBUG) { printf( COLOR("->", BOLD_WHITE) " Freed address: [" BOLD_WHITE "%p" END_COLOR "]\nAllocation origin: line [" COLOR("%d", BOLD_WHITE) "] in function [" COLOR("%s", BOLD_WHITE) "]\n\n", (*allocs)->_alloc, (*allocs)->_alloc_pos._line, (*allocs)->_alloc_pos._func_name); };
 
-// / MEM_LOG
-#   define MEM_LOG() \
+// LOG_FD
+#   define LOG_FD() \
+      printf(COLOR("->", BOLD_WHITE) " File fd: [" BOLD_WHITE "%d" END_COLOR "]\nOpen origin: line [" COLOR("%d", BOLD_WHITE) "] in function [" COLOR("%s", BOLD_WHITE) "]\n\n", iterator->_fd, iterator->_open_pos._line, iterator->_open_pos._func_name)
+
+// LOG_ALLOC
+#   define LOG_ALLOC() \
       printf(COLOR("->", BOLD_WHITE) " Allocation address: [" BOLD_WHITE "%p" END_COLOR "]\nAllocation origin: line [" COLOR("%d", BOLD_WHITE) "] in function [" COLOR("%s", BOLD_WHITE) "]\n\n", iterator->_alloc, iterator->_alloc_pos._line, iterator->_alloc_pos._func_name)
 
-// / NUKE
+// NUKE
 #   define NUKE_START_DEBUG_LOG() \
       if (DEBUG) printf("[%s]: Nuking environment... 💥\n", DEFAULT_LOG)
 #   define NUKE_SUCCESS_DEBUG_LOG() \
@@ -89,8 +93,11 @@
 # define _AM_REGISTER_FD(new_fd) \
       access_mem_REGISTER_FD(new_fd, (open_pos){__LINE__, __func__, #new_fd})
 
-# define _AM_LOG_MEM() \
-      access_mem_LOG_MEM()
+# define _AM_LOG_ALLOCS() \
+      access_mem_LOG_ALLOCS()
+
+# define _AM_LOG_FDS() \
+      access_mem_LOG_FDS()\
 
 # define _AM_NUKE_EXIT(opt_exit_code) \
       access_mem_NUKE(_AM_EXIT_ON, opt_exit_code)
