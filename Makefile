@@ -18,13 +18,18 @@ LIB_OBJS = $(LIB_SRCS:%.c=$(LIB_OBJS_DIR)/%.o)
 
 LIB_NAME = access_mem.a
 
-TEST_FILE = main
-MAIN = $(LIB_SRCS_DIR)/main.c
+# TEST_FILE = main
+# MAIN = $(LIB_SRCS_DIR)/main.c
 
-test: lib # regle just pour creer un test executable pour le main
-	$(COMPILE) $(COMPILE_FLAGS) $(MAIN) $(LIB_NAME) -o $(TEST_FILE)
+##### test rule with main #####
+# test: lib # regle just pour creer un test executable pour le main
+# 	$(COMPILE) $(COMPILE_FLAGS) $(MAIN) $(LIB_NAME) -o $(TEST_FILE)
+###############################
 
-lib: $(LIB_NAME) # regle pour creer juste la lib
+lib: COMPILE_FLAGS := $(filter-out -D%, $(COMPILE_FLAGS)) 
+lib: $(LIB_NAME) # rule to create lib without DEBUG MODE
+
+debug: $(LIB_NAME) # rule to create lib in DEBUG MODE
 
 $(LIB_NAME): $(LIB_OBJS_DIR) $(LIB_OBJS)
 	$(ARCHIVE) $(LIB_NAME) $(LIB_OBJS) 
@@ -40,8 +45,9 @@ clean:
 
 fclean: clean
 	@rm -rf $(LIB_NAME)
-	@rm -rf $(TEST_FILE)
+# 	@rm -rf $(TEST_FILE)
 
-re_lib: fclean lib
+re-lib: fclean lib
+re-debug: fclean debug
 
-re: fclean test
+# re: fclean test
