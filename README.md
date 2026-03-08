@@ -1,4 +1,4 @@
-# garbage-collector
+# access-mem
 
 This library gives you the right to not **free() mallocs** and **close() fds** anymore.
 To compile without debugging just type this command in the repository:
